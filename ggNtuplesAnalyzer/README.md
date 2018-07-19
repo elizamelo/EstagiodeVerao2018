@@ -1,12 +1,13 @@
 # ggNtuplesAnalyzer
-ggNtuplesAnalyzer @ lxplus
+ggNtuplesAnalyzer @ Farm/Fermis
 
 ### Setup
 ```
 cmsrel CMSSW_8_0_26_patch1
 cd CMSSW_8_0_26_patch1/src
 cmsenv
-cd ggNtuplesAnalyzer/
+git clone https://github.com/elizamelo/EstagiodeVerao2018.git
+cd EstagiodeVerao2018/ggNtuplesAnalyzer/
 ```
 
 ### Analysis Workflow
