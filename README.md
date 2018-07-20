@@ -4,6 +4,16 @@ ggNtuplesAnalyzer @ Farm/Fermis
 
 ### Setup
 ```
+# Environment
+#to set up CMSSW before running cmsenv or scram. bash mode
+
+export SCRAM_ARCH=slc6_amd64_gcc530
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
+source $VO_CMS_SW_DIR/cmsset_default.sh
+export CMS_PATH=$VO_CMS_SW_DIR
+export CVSROOT=martinsg@cmscvs.cern.ch:/local/reps/CMSSW
+export CVS_RSH=ssh-bash-4.1$ setenv SCRAM_ARCH slc5_amd64_gcc530
+
 cmsrel CMSSW_8_0_26_patch1
 cd CMSSW_8_0_26_patch1/src
 cmsenv
