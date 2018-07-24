@@ -66,7 +66,41 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 	auto * h_DiMuon_Pt = new TH1D("h_DiMuon_Pt", ";p_{T}^{#mu#mu} (GeV);", 150, 0.0, 150.0);
 	auto * h_DiMuon_Eta = new TH1D("h_DiMuon_Eta", ";#eta_{#mu#mu};", 30, -2.4, 2.4);
 	auto * h_DiMuon_Phi = new TH1D("h_DiMuon_Phi", ";#phi_{#mu#mu};", 70, -3.2, 3.2);
-	auto * h_DiMuon_Mass = new TH1D("h_DiMuon_Mass", ";M_{#mu#mu} (GeV);", 80, 50, 130);
+	auto * h_DiMuon_Mass = new TH1D("h_DiMuon_Mass", ";M_{#mu#mu} (GeV);", 80, 0, 200);
+        
+	//missing ET, neutrinos
+	
+
+
+        // photons
+        dataTree->SetBranchStatus("nPho",1);
+       	TTreeReaderValue< int > nPho(*dataReader, "nPho");
+        dataTree->SetBranchStatus("phoEt",1);
+	TTreeReaderArray< float > phoEt(*dataReader, "phoEt");
+        dataTree->SetBranchStatus("phoEta",1);
+	TTreeReaderArray< float > phoEta(*dataReader, "phoEta");
+        dataTree->SetBranchStatus("phoPhi",1);
+	TTreeReaderArray< float > phoPhi(*dataReader, "phoPhi");
+        dataTree->SetBranchStatus("phoSCEta",1);
+        TTreeReaderArray< float > phoSCEta(*dataReader, "phoSCEta");
+        dataTree->SetBranchStatus("phoIDMVA",1);
+	TTreeReaderArray< float > phoIDMVA(*dataReader, "phoIDMVA");
+        dataTree->SetBranchStatus("phoR9",1);
+	TTreeReaderArray< float > phoR9(*dataReader, "phoR9");
+        dataTree->SetBranchStatus("phoIDbit",1);
+	TTreeReaderArray< unsigned short > phoIDbit(*dataReader, "phoIDbit");
+        dataTree->SetBranchStatus("phoEleVeto",1);
+	TTreeReaderArray< int > phoEleVeto(*dataReader, "phoEleVeto");
+
+	auto * h_LeadingPhoton_Pt = new TH1D("h_LeadingPhoton_Pt", ";p_{T}^{lead #gamma} (GeV);", 150, 0.0, 150.0);
+	auto * h_LeadingPhoton_Eta = new TH1D("h_LeadingPhoton_Eta", ";#eta^{lead #gamma};", 30, -2.4, 2.4);
+	auto * h_LeadingPhoton_Phi = new TH1D("h_LeadingPhoton_Phi", ";#phi^{lead #gamma};", 70, -3.2, 3.2);
+
+	auto * h_DiMuonPhoton_Pt = new TH1D("h_DiMuonPhoton_Pt", ";p_{T}^{#mu#mu#gamma} (GeV);", 150, 0.0, 150.0);
+	auto * h_DiMuonPhoton_Eta = new TH1D("h_DiMuonPhoton_Eta", ";#eta_{#mu#mu#gamma};", 30, -2.4, 2.4);
+	auto * h_DiMuonPhoton_Phi = new TH1D("h_DiMuonPhoton_Phi", ";#phi_{#mu#mu#gamma};", 70, -3.2, 3.2);
+	auto * h_DiMuonPhoton_Mass = new TH1D("h_DiMuonPhoton_Mass", ";M_{#mu#mu#gamma} (GeV);", 80, 50, 200);
+
 
 	////////////////////////////////////////////////////////////////////
 	// numer of entries
@@ -103,7 +137,8 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 
 			int trailingMuonIndex = -99; //leading muon index	
 			bool trailingMuonIsTight = false; //leading muon id (tight)
-
+                        double phiMassMin = 1012.0/1000.0; //GeV
+                        double phiMassMax = 1028.0/1000.0; //GeV
 			for (int iMuon = 0; iMuon < *nMu; iMuon++) { //loop over muons looking for the leading muon
 				if (muPt[iMuon] > 27.0 && fabs(muEta[iMuon]) < 2.4) { // pt > 27 and Abs(Eta) < 2.4
 					leadingMuonIndex = iMuon;
@@ -163,9 +198,66 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 				h_DiMuon_Eta->Fill(dimuon->Eta());
 				h_DiMuon_Phi->Fill(dimuon->Phi());
 				h_DiMuon_Mass->Fill(dimuon->M());
+		//	}
+   ////////////////////////////////////////////////////////////////////
+                        // photons pre-selection  
+                        if (*nPho >= 1) {
+                            int nGoodPhotons = 0; //number of good photons
+                            int leadingPhotonIndex = -99; //leading photons index
+                            bool leadingPhotonIsSCEta = false; // 
+                            bool leadingPhotonIsSCEtaG = false; //
+  			    bool leadingPhotonEleVeto = false; // photon electron veto
+ 			    bool leadingPhotonIDMVA = false; //photon MVA ID
+                            
+			   for (int iPhoton = 0; iPhoton < *nPho; iPhoton++) { //loop over photon looking for the leading muon
+				if (phoEt[iPhoton] > 20.0 && fabs(phoEta[iPhoton]) < 2.5) { // et > 20 and Abs(Eta) < 2.5
+					leadingPhotonIndex = iPhoton;
+					// more info: https://github.com/cmkuo/ggAnalysis/blob/master/ggNtuplizer/plugins/ggNtuplizer_muons.cc
+					//leadingMuIsTight = (((muIDbit[iMuon] >> 2) & 1) == 1) ? true : false; // is tight muon
+			                leadingPhotonIsSCEta = (fabs(phoSCEta[iPhoton]) < 2.5) ? true : false; 
+  			                leadingPhotonIsSCEtaG = (!(fabs(phoSCEta[iPhoton]) > 1.4442 && fabs(phoSCEta[iPhoton]) < 1.566)) ? true : false;
+			                leadingPhotonEleVeto = (phoEleVeto[iPhoton] != 0) ? true : false; 
+			                leadingPhotonIDMVA = (phoIDMVA[iPhoton] > 0.2) ? true : false;
+					nGoodPhotons++;
+					break;
+				}
 			}
+                          
+                          // pass trigger AND two good muons AND both muons are tight muons && one photon
+			  //if (goodTriggerEvt == true && nGoodMuons > 0 && trailingMuonIsTight == true && leadingMuonIsTight == true && leadingPhotonIsSCEta == true && leadingPhotonIsSCEtaG == true && leadingPhotonEleVeto == true && leadingPhotonIDMVA == true && (dimuon->M()>phiMassMin && dimuon->M()< phiMassMax ) ) {
+			  if (goodTriggerEvt == true && nGoodMuons > 0 && trailingMuonIsTight == true && leadingMuonIsTight == true && leadingPhotonIsSCEta == true && leadingPhotonIsSCEtaG == true && leadingPhotonEleVeto == true && leadingPhotonIDMVA == true ) {
+				//leading photon
+				auto * leadingPhoton = new TLorentzVector();
+				leadingPhoton->SetPtEtaPhiM(phoEt[leadingPhotonIndex], phoEta[leadingPhotonIndex], phoPhi[leadingPhotonIndex], 0);
+				// dimuon+pho
+				auto * dimuonpho = new TLorentzVector(); // dimuonpho = leading muon + trailing muon + leading photon
+				dimuonpho->SetPtEtaPhiM(
+						(*leadingMuon+*trailingMuon+*leadingPhoton).Pt(), 
+						(*leadingMuon+*trailingMuon+*leadingPhoton).Eta(),
+						(*leadingMuon+*trailingMuon+*leadingPhoton).Phi(),
+						(*leadingMuon+*trailingMuon+*leadingPhoton).M()
+						);
+				// FILL HISTOS
+				h_LeadingPhoton_Pt->Fill(leadingPhoton->Pt());
+				h_LeadingPhoton_Eta->Fill(leadingPhoton->Eta());
+				h_LeadingPhoton_Phi->Fill(leadingPhoton->Phi());	
 
-		}
+				h_DiMuonPhoton_Pt->Fill(dimuonpho->Pt());
+				h_DiMuonPhoton_Eta->Fill(dimuonpho->Eta());
+				h_DiMuonPhoton_Phi->Fill(dimuonpho->Phi());
+				h_DiMuonPhoton_Mass->Fill(dimuonpho->M());
+
+                              
+				
+                              
+                           }//good pho
+                              
+                                  
+			
+                        }//pho sel
+                    }//dimuon sel
+
+		}//ja estava
 
     } // end loop over events
 

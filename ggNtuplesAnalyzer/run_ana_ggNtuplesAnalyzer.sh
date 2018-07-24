@@ -7,12 +7,12 @@ mkdir outputFiles
 ############################################################
 # Data - 35.86/fb - 2016 Data 
 
-#time root -b -q -l "run_Ana.C+(\"filesLists/localFiles/data.txt\", -1, \"Run2016B\")"  &
+time root -b -q -l "run_Ana.C+(\"filesLists/localFiles/data.txt\", -1, \"Run2016B\")"  &
 ############################################################
 ## MC
-# time root -b -q -l "run_Ana.C+(\"filesLists/filesFromEOS/ZToJPsiGamma_RunIISummer16MiniAODv2.txt\", -1, \"Run2016B\")"  &
-time root -b -q -l "run_Ana.C+(\"filesLists/localFiles/mc.txt\", -1, \"MCTEST\")" &
-
+#time root -b -q -l "run_Ana.C+(\"filesLists/filesFromEOS/ZToJPsiGamma_RunIISummer16MiniAODv2.txt\", -1, \"Run2016B\")"  &
+#time root -b -q -l "run_Ana.C+(\"filesLists/localFiles/mc.txt\", -1, \"MCTEST\")" &
+#time root -b -q -l "run_Ana.C+(\"filesLists/localFiles/mcbckZ.txt\", -1, \"MCBkgTEST\")" &
 wait
 
 ls -lha outputFiles
