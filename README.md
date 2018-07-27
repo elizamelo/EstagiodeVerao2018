@@ -1,12 +1,7 @@
 # EstagiodeVerao2018
 # ggNtuplesAnalyzer
 ggNtuplesAnalyzer @ Farm/Fermis
-export SCRAM_ARCH=slc6_amd64_gcc530
-export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
-source $VO_CMS_SW_DIR/cmsset_default.sh
-export CMS_PATH=$VO_CMS_SW_DIR
-export CVSROOT=martinsg@cmscvs.cern.ch:/local/reps/CMSSW
-export CVS_RSH=ssh-bash-4.1$ setenv SCRAM_ARCH slc5_amd64_gcc530
+
 ### Setup
 ```
 # Environment
