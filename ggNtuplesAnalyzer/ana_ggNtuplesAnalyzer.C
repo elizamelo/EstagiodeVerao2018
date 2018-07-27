@@ -12,6 +12,7 @@
 #include "TH1.h"
 
 #include "plugins/ggNtuplesFilesReader.h"
+#include "plugins/deltaR_deltaPhi.h"
 
 using namespace std;
 
@@ -102,6 +103,33 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 	auto * h_DiMuonPhoton_Mass = new TH1D("h_DiMuonPhoton_Mass", ";M_{#mu#mu#gamma} (GeV);", 80, 50, 200);
 
 
+	auto * h_deltaR_Leading_Trailing = new TH1D("h_deltaR_Leading_Trailing", ";#DeltaR(lead #mu, trail #mu);", 100, 0.0, 1.0);
+	h_deltaR_Leading_Trailing->Sumw2();
+	auto * h_deltaR_Leading_Photon = new TH1D("h_deltaR_Leading_Photon", ";#DeltaR(lead #mu, #gamma);", 100, 0.0, 5.0);
+	h_deltaR_Leading_Photon->Sumw2();
+	auto * h_deltaR_Trailing_Photon = new TH1D("h_deltaR_Trailing_Photon", ";#DeltaR(trail #mu, #gamma);", 100, 0.0, 5.0);
+	h_deltaR_Trailing_Photon->Sumw2();
+	auto * h_deltaR_Meson_Photon = new TH1D("h_deltaR_Meson_Photon", ";#DeltaR(#mu#mu, #gamma);", 100, 0.0, 5.0);
+	h_deltaR_Meson_Photon->Sumw2();
+	auto * h_deltaPhi_Meson_Photon = new TH1D("h_deltaPhi_Meson_Photon", ";|#Delta#phi(#mu#mu, #gamma)|;", 100, 0.0, 4.0);
+	h_deltaPhi_Meson_Photon->Sumw2();
+
+
+        auto * h_kin_deltaR_Leading_Trailing = new TH1D("h_kin_deltaR_Leading_Trailing", ";#DeltaR(lead #mu, trail #mu);", 100, 0.0, 1.0);
+        h_kin_deltaR_Leading_Trailing->Sumw2();
+        auto * h_kin_deltaR_Leading_Photon = new TH1D("h_kin_deltaR_Leading_Photon", ";#DeltaR(lead #mu, #gamma);", 100, 0.0, 5.0);
+        h_kin_deltaR_Leading_Photon->Sumw2();
+        auto * h_kin_deltaR_Trailing_Photon = new TH1D("h_kin_deltaR_Trailing_Photon", ";#DeltaR(trail #mu, #gamma);", 100, 0.0, 5.0);
+        h_kin_deltaR_Trailing_Photon->Sumw2();
+        auto * h_kin_deltaR_Meson_Photon = new TH1D("h_kin_deltaR_Meson_Photon", ";#DeltaR(#mu#mu, #gamma);", 100, 0.0, 5.0);
+        h_kin_deltaR_Meson_Photon->Sumw2();
+        auto * h_kin_deltaPhi_Meson_Photon = new TH1D("h_kin_deltaPhi_Meson_Photon", ";|#Delta#phi(#mu#mu, #gamma)|;", 100, 0.0, 4.0);
+        h_kin_deltaPhi_Meson_Photon->Sumw2();
+        auto * h_MesonPhoton_Pt = new TH1D("h_MesonPhoton_Pt", ";p_{T}^{#mu#mu#gamma} (GeV);", 150, 0.0, 150.0);
+        auto * h_MesonPhoton_Eta = new TH1D("h_MesonPhoton_Eta", ";#eta_{#mu#mu#gamma};", 30, -2.4, 2.4);
+        auto * h_MesonPhoton_Phi = new TH1D("h_MesonPhoton_Phi", ";#phi_{#mu#mu#gamma};", 70, -3.2, 3.2);
+        auto * h_MesonPhoton_Mass = new TH1D("h_MesonPhoton_Mass", ";M_{#mu#mu#gamma} (GeV);", 80, 50, 200);
+
 	////////////////////////////////////////////////////////////////////
 	// numer of entries
 	auto totalEvts = dataTree->GetEntries();
@@ -139,6 +167,10 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 			bool trailingMuonIsTight = false; //leading muon id (tight)
                         double phiMassMin = 1012.0/1000.0; //GeV
                         double phiMassMax = 1028.0/1000.0; //GeV
+                        
+			double miniMesonMass = 2800.0/1000.0; //GeV
+                        double maxMesonMass = 3200.0/1000.0; //GeV
+
 			for (int iMuon = 0; iMuon < *nMu; iMuon++) { //loop over muons looking for the leading muon
 				if (muPt[iMuon] > 27.0 && fabs(muEta[iMuon]) < 2.4) { // pt > 27 and Abs(Eta) < 2.4
 					leadingMuonIndex = iMuon;
@@ -237,6 +269,8 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 						(*leadingMuon+*trailingMuon+*leadingPhoton).Phi(),
 						(*leadingMuon+*trailingMuon+*leadingPhoton).M()
 						);
+
+
 				// FILL HISTOS
 				h_LeadingPhoton_Pt->Fill(leadingPhoton->Pt());
 				h_LeadingPhoton_Eta->Fill(leadingPhoton->Eta());
@@ -246,10 +280,34 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 				h_DiMuonPhoton_Eta->Fill(dimuonpho->Eta());
 				h_DiMuonPhoton_Phi->Fill(dimuonpho->Phi());
 				h_DiMuonPhoton_Mass->Fill(dimuonpho->M());
-
-                              
 				
+				h_deltaR_Leading_Trailing->Fill(deltaR(leadingMuon->Eta(), leadingMuon->Phi(), trailingMuon->Eta(), trailingMuon->Phi()));
+                                h_deltaR_Leading_Photon->Fill(deltaR(leadingMuon->Eta(), leadingMuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()));
+                                h_deltaR_Trailing_Photon->Fill(deltaR(trailingMuon->Eta(), trailingMuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()));
+                                h_deltaR_Meson_Photon->Fill(deltaR(dimuon->Eta(), dimuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()));
+                                h_deltaPhi_Meson_Photon->Fill(fabs(deltaPhi(dimuon->Phi(), leadingPhoton->Phi())));
                               
+                                auto goodDeltaRMuonsPhoton = true;
+				auto goodDeltaRPhiMesonPhoton = true; 
+				auto goodMesonMassCut = true;
+                                goodDeltaRMuonsPhoton = ( (deltaR(leadingMuon->Eta(), leadingMuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()) > 1.0) && (deltaR(trailingMuon->Eta(), trailingMuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()) > 1.0)) ? true : false;
+                                goodDeltaRPhiMesonPhoton = ( (deltaR(dimuon->Eta(), dimuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()) > 2.0) && (fabs(deltaPhi(dimuon->Phi(), leadingPhoton->Phi())) > 1.5) ) ? true : false;
+                                goodMesonMassCut = ((dimuon->M() > miniMesonMass && dimuon->M() < maxMesonMass)) ? true : false;
+				if(goodDeltaRMuonsPhoton==true && goodDeltaRPhiMesonPhoton==true && goodMesonMassCut==true){
+				       h_MesonPhoton_Pt->Fill(dimuonpho->Pt());
+	                               h_MesonPhoton_Eta->Fill(dimuonpho->Eta());
+	                               h_MesonPhoton_Phi->Fill(dimuonpho->Phi());
+         	                       h_MesonPhoton_Mass->Fill(dimuonpho->M());
+
+                	               h_kin_deltaR_Leading_Trailing->Fill(deltaR(leadingMuon->Eta(), leadingMuon->Phi(), trailingMuon->Eta(), trailingMuon->Phi()));
+                        	       h_kin_deltaR_Leading_Photon->Fill(deltaR(leadingMuon->Eta(), leadingMuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()));
+                                       h_kin_deltaR_Trailing_Photon->Fill(deltaR(trailingMuon->Eta(), trailingMuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()));
+                                       h_kin_deltaR_Meson_Photon->Fill(deltaR(dimuon->Eta(), dimuon->Phi(), leadingPhoton->Eta(), leadingPhoton->Phi()));
+                                       h_kin_deltaPhi_Meson_Photon->Fill(fabs(deltaPhi(dimuon->Phi(), leadingPhoton->Phi())));
+
+
+				
+                                }//deltasRPhi
                            }//good pho
                               
                                   
