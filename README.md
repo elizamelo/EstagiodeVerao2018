@@ -27,7 +27,7 @@ cd EstagiodeVerao2018/ggNtuplesAnalyzer/
 ```
 
 This will select dimuon pairs:
-- event pass **HLT_IsoMu24** HLT Path
+- event pass **HLT_IsoMu24** HLT Path or one can change for **HLT_Mu17_Photon30_CaloIdL_L1ISO**
 - leading **(tight)** muon: **pt > 27.0** and **|eta| < 2.4**
 - trailing **(tight)** muon: **pt > 2.0** and **|eta| < 2.4**
 - muons with **opposite charge**
