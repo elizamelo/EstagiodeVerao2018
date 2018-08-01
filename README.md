@@ -47,3 +47,8 @@ Inside root:
 ```
 ((TH1D*)_file0->Get("h_DiMuon_Mass"))->Draw()
 ```
+### Fitting (i.e. fit on dimuon mass distribution):
+Load root:
+```
+root -l fit.C++
+```
