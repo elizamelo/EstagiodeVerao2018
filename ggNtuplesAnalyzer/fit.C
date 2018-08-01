@@ -95,7 +95,7 @@ void FIT() {
   int ZBins = (int)(Z_right_limit - Z_left_limit)/2.5;
   int Upsi_bins = (int)(UpsiRightCut - UpsiLeftCut)/0.05;
 
-  TFile *ntuple = new TFile("outTreeToFit_HZtoUpsilonPhoton_Data_ZtoUpsilon_Cat0_ZZZZZZ.root");
+  TFile *ntuple = new TFile("file:/lstore/cms/eliza/ntupleMass/outTreeToFit_HZtoUpsilonPhoton_Data_ZtoUpsilon_Cat0_ZZZZZZ.root");
   TTree* tree = (TTree*) ntuple->Get("default/outTree_HZtoUpsilonPhoton");
 
   RooRealVar mHZ("mHZ","#mu^{+}#mu^{-}#gamma invariant mass [GeV]", Z_left_limit, Z_right_limit);
