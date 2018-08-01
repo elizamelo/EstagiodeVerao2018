@@ -151,8 +151,8 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 		// trigger selection 
 		// more info: https://github.com/cmkuo/ggAnalysis/blob/master/ggNtuplizer/plugins/ggNtuplizer_globalEvent.cc#L151
 		auto goodTriggerEvt = true;
-		// goodTriggerEvt = (((*HLTEleMuX >> 8) & 1) == 1) ? true : false; // HLT_Mu17_Photon30_CaloIdL_L1ISO_v*
-		goodTriggerEvt = (((*HLTEleMuX >> 19) & 1) == 1) ? true : false; // HLT_IsoMu24_v*
+		goodTriggerEvt = (((*HLTEleMuX >> 8) & 1) == 1) ? true : false; // HLT_Mu17_Photon30_CaloIdL_L1ISO_v*
+		//goodTriggerEvt = (((*HLTEleMuX >> 19) & 1) == 1) ? true : false; // HLT_IsoMu24_v*
 
 
 		////////////////////////////////////////////////////////////////////
