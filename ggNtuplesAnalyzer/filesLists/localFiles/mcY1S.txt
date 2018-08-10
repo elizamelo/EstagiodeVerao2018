@@ -1,0 +1,7 @@
+file:/lstore/cms/eliza/inputFiles/mc/ZToUpsilon1SGamma_80X_mcRun2_2016/ggtree_mc_1.root
+file:/lstore/cms/eliza/inputFiles/mc/ZToUpsilon1SGamma_80X_mcRun2_2016/ggtree_mc_2.root
+file:/lstore/cms/eliza/inputFiles/mc/ZToUpsilon1SGamma_80X_mcRun2_2016/ggtree_mc_3.root
+file:/lstore/cms/eliza/inputFiles/mc/ZToUpsilon1SGamma_80X_mcRun2_2016/ggtree_mc_4.root
+file:/lstore/cms/eliza/inputFiles/mc/ZToUpsilon1SGamma_80X_mcRun2_2016/ggtree_mc_5.root
+file:/lstore/cms/eliza/inputFiles/mc/ZToUpsilon1SGamma_80X_mcRun2_2016/ggtree_mc_6.root
+file:/lstore/cms/eliza/inputFiles/mc/ZToUpsilon1SGamma_80X_mcRun2_2016/ggtree_mc_7.root
